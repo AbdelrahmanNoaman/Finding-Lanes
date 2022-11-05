@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 #first step is to convert the image to a gray scale image
 
@@ -22,6 +23,17 @@ def canny(image):
     blur = cv2.GaussianBlur(gray_image,(5,5),0)
     canny = cv2.Canny(blur,50,150)
     return canny
+#in here we will specify our region of interest
+# we will make our mask with black pixels and then specify our region of interest then we will fill them together
+def region_of_interest(image):
+    height=image.shape[0]
+    triangles=np.array([
+        [(200,height),(1100,height),(550,250)]
+    ])
+    mask=np.zeros_like(image)
+#it takes an array of traingles not only one
+    cv2.fillPoly(mask ,triangles, 255)
+    return mask   
 
 image = cv2.imread('test_image.jpg')
 lane_image = np.copy(image)
@@ -31,6 +43,8 @@ canny=canny(lane_image)
 #it waits time for the image to be displayed
 #0 makes the image run infinitely until we press any key
 
-cv2.imshow("image",canny)
-
+cv2.imshow("image",region_of_interest(canny))
 cv2.waitKey(0)
+
+#note
+# we used plt to display the image in a better way so we can get our region of interest in x,y
